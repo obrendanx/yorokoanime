@@ -1,0 +1,27 @@
+@model yorokoanime.ViewModels.UserRegister
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="wrapper w-50 p-3 mx-auto">
+    <h1>Register an Account...</h1><br/>
+
+    <form asp-action="Register" asp-controller="Login" method="post">
+        <div class="form-group">
+            <input type="text" asp-for="Username" class="form-control" placeholder="Please enter a username"/>
+            <span asp-validation-for="Username" class="text-danger"></span><br/>
+
+            <input type="password" asp-for="Password" class="form-control" placeholder="Please enter a password"/>
+            <span asp-validation-for="Password" class="text-danger"></span><br/>
+
+            <input type="text" asp-for="Email" class="form-control" placeholder="Please enter a valid email address"/>
+            <span asp-validation-for="Email" class="text-danger"></span><br/>
+
+            <span class="text-danger">@ViewBag.ErrorMessage</span><br/>
+
+            <input class="btn btn-dark" style="margin-top: 10px;" type="submit" value="Register"/>
+        </div>
+    </form>
+</div>
