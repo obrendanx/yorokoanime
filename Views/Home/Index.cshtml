@@ -1,5 +1,6 @@
-﻿@{
+﻿@model List<yorokoanime.ViewModels.AnimeModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<p>user: @( User.Identity?.Name ?? "Annoymous")</p>
+@await Html.PartialAsync("_TopAnime", Model)
