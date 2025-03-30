@@ -7,3 +7,8 @@ function scrollAnime(direction) {
     const carousel = document.getElementById("animeCarousel");
     carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
+
+function scrollManga(direction) {
+    const carousel = document.getElementById("mangaCarousel");
+    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}

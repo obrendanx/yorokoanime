@@ -1,0 +1,33 @@
+@model List<yorokoanime.ViewModels.MangaModel>
+
+<h2 class="text-left mb-4">Top Manga</h2>
+<hr></hr>
+
+<!-- Carousel Container -->
+<div class="container position-relative">
+    <!-- Left Scroll Button -->
+    <button class="carousel-btn left-btn" onclick="scrollManga(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <!-- Anime List Wrapper -->
+    <div id="mangaCarousel" class="anime-list d-flex overflow-hidden">
+        @foreach (var manga in Model)
+        {
+            <div class="anime-item card">
+                <img src="@manga.ImageUrl" class="card-img-top" alt="@manga.Title">
+                <div class="card-body text-center">
+                    <h5 class="card-title">@manga.Title</h5>
+                    <p class="card-text"><strong>Volumes:</strong> @manga.Volumes</p>
+                    <p class="card-text"><strong>Chapters:</strong> @manga.Chapters</p>
+                    <p class="card-text"><strong>Score:</strong> @manga.Score</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Right Scroll Button -->
+    <button class="carousel-btn right-btn" onclick="scrollManga(1)">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>

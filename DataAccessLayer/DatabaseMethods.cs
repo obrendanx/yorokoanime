@@ -60,4 +60,72 @@ public class DatabaseMethods
         
         return null;
     }
+    
+    public bool AddAnime(AnimeModel model, byte[] imageBytes)
+    {
+        try
+        {
+            _dbContext.Database.ExecuteSqlRaw(
+                "EXEC AddAnime @malId, @title, @imageUrl, @episodes, @synopsis, @score, " +
+                "@rank, @popularity, @members, @favorites, @year, @trailerUrl, @background, @imageBytes, @title_english, @title_japanese, @status, @duration, @rating, @season, @producer, @studio",
+                new SqlParameter("@malId", model.MalId),
+                new SqlParameter("@title", (object?)model.Title ?? DBNull.Value), // Convert list to comma-separated string
+                new SqlParameter("@imageUrl", model.ImageUrl),
+                new SqlParameter("@episodes", (object?)model.Episodes ?? DBNull.Value),
+                new SqlParameter("@synopsis", model.Synopsis ?? (object)DBNull.Value),
+                new SqlParameter("@score", (object?)model.Score ?? DBNull.Value),
+                new SqlParameter("@rank", (object?)model.Rank ?? DBNull.Value),
+                new SqlParameter("@popularity", (object?)model.Popularity ?? DBNull.Value),
+                new SqlParameter("@members", (object?)model.Members ?? DBNull.Value),
+                new SqlParameter("@favorites", (object?)model.Favorites ?? DBNull.Value),
+                new SqlParameter("@year", (object?)model.Year ?? DBNull.Value),
+                new SqlParameter("@trailerUrl", model.Trailer.Url ?? (object)DBNull.Value),
+                new SqlParameter("@background", model.Background ?? (object)DBNull.Value),
+                new SqlParameter("@imageBytes", imageBytes ?? (object)DBNull.Value),
+                new SqlParameter("@title_english", model.TitleEnglish ?? (object)DBNull.Value),
+                new SqlParameter("@title_japanese", model.TitleJapanese ?? (object)DBNull.Value),
+                new SqlParameter("@status", model.Status ?? (object)DBNull.Value),
+                new SqlParameter("@duration", model.Duration ?? (object)DBNull.Value),
+                new SqlParameter("@rating", model.Rating ?? (object)DBNull.Value),
+                new SqlParameter("@season", model.Season ?? (object)DBNull.Value),
+                new SqlParameter("@producer", model.Producers.FirstOrDefault().Name ?? (object)DBNull.Value),
+                new SqlParameter("@studio", model.Studios.FirstOrDefault().Name ?? (object)DBNull.Value)
+
+            );
+
+            return true; // Return true if successful
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding anime: {ex.Message}");
+            return false; // Return false if an error occurs
+        }
+    }
+    
+    public bool AddManga(MangaModel model, byte[] imageBytes)
+    {
+        try
+        {
+            string titleJapanese = model.Titles?.FirstOrDefault(t => t.Type == "Japanese")?.Title ?? model.Title;
+            
+            _dbContext.Database.ExecuteSqlRaw(
+                "EXEC AddManga @malid, @titles, @imageUrl, @chapters, @volumes, @synopsis, @score, @imageBytes",
+                new SqlParameter("@malId", model.MalId),
+                new SqlParameter("@titles", titleJapanese), // Convert list to comma-separated string
+                new SqlParameter("@imageUrl", model.ImageUrl),
+                new SqlParameter("@chapters", (object?)model.Chapters ?? DBNull.Value),
+                new SqlParameter("@volumes", (object?)model.Volumes ?? DBNull.Value),
+                new SqlParameter("@synopsis", model.Synopsis ?? (object)DBNull.Value),
+                new SqlParameter("@score", model.Score ?? (object)DBNull.Value),
+                new SqlParameter("@imageBytes", imageBytes ?? (object)DBNull.Value)
+            );
+
+            return true; // Return true if successful
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding manga: {ex.Message}");
+            return false; // Return false if an error occurs
+        }
+    }
 }

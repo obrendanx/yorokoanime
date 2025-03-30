@@ -1,6 +1,9 @@
-﻿@model List<yorokoanime.ViewModels.AnimeModel>
+﻿@model yorokoanime.ViewModels.HomeModel
+
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@await Html.PartialAsync("_TopAnime", Model)
+<!-- Include the Partial View -->
+@await Html.PartialAsync("_TopAnime", Model.TopAnime)
+@await Html.PartialAsync("_TopManga", Model.TopManga)
