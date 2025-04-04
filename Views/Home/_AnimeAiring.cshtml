@@ -1,0 +1,54 @@
+@model List<yorokoanime.ViewModels.AnimeModel>
+
+<style>
+    #airingAnimeCarousel .carousel-item img {
+        height: 500px; /* Adjust height as needed */
+        object-fit: fill; /* Ensures the image fits well */
+    }
+</style>
+
+@{
+    // Filter out anime without a valid trailer image and remove duplicates
+    var filteredAnime = Model?
+        .Where(a => !string.IsNullOrEmpty(a.Trailer?.Images?.MaximumImageUrl))
+        .GroupBy(a => a.Trailer.Images.MaximumImageUrl) // Remove duplicates based on image URL
+        .Select(g => g.First()) // Pick the first unique entry
+        .ToList();
+}
+
+@if (filteredAnime != null && filteredAnime.Any())
+{
+    <div id="airingAnimeCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+            @for (int i = 0; i < filteredAnime.Count; i++)
+            {
+                var anime = filteredAnime[i];
+                <div class="carousel-item @(i == 0 ? "active" : "")">
+                    <img src="@anime.Trailer.Images.MaximumImageUrl" class="d-block w-100" alt="@anime.Title">
+                    <div class="carousel-caption d-md-block bg-dark bg-opacity-50 p-3 rounded">
+                        <h3>@anime.Title</h3>
+                        <p class="banner-text">@(anime.Synopsis.Length > 300 ? anime.Synopsis.Substring(0, 300) + "..." : anime.Synopsis)</p>
+                        @if (anime.Genres != null && anime.Genres.Any())
+                        {
+                            <p class="banner-text">
+                                <strong>Genres:</strong> @string.Join(", ", anime.Genres.Select(g => g.Name))
+                            </p>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#airingAnimeCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#airingAnimeCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+}
+else
+{
+    <p class="text-center">No currently airing anime with trailers found.</p>
+}

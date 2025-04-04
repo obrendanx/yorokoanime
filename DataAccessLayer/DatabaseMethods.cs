@@ -61,7 +61,7 @@ public class DatabaseMethods
         return null;
     }
     
-    public bool AddAnime(AnimeModel model, byte[] imageBytes)
+    public bool AddAnime(AnimeModel model, byte[] imageBytes, byte[] maxImageBytes)
     {
         try
         {
@@ -82,6 +82,7 @@ public class DatabaseMethods
                 new SqlParameter("@trailerUrl", model.Trailer.Url ?? (object)DBNull.Value),
                 new SqlParameter("@background", model.Background ?? (object)DBNull.Value),
                 new SqlParameter("@imageBytes", imageBytes ?? (object)DBNull.Value),
+                new SqlParameter("@maxImageBytes", maxImageBytes ?? (object)DBNull.Value),
                 new SqlParameter("@title_english", model.TitleEnglish ?? (object)DBNull.Value),
                 new SqlParameter("@title_japanese", model.TitleJapanese ?? (object)DBNull.Value),
                 new SqlParameter("@status", model.Status ?? (object)DBNull.Value),

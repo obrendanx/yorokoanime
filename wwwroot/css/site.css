@@ -71,3 +71,17 @@ body {
 .carousel-btn:hover {
   background-color: rgba(0, 0, 0, 0.8);
 }
+
+.carousel-caption{
+  width: 100%;
+  right:0;
+  left:0;
+  padding:2.5% 2.5% 2.5% 5%;
+  text-align: left;
+  bottom:0;
+}
+
+.banner-text{
+  font-size: 0.9em;
+  color: #ccc;
+}

@@ -51,6 +51,25 @@ public class AnimeService
 
         return result?.Data ?? new List<MangaModel>();
     }
+    
+    public async Task<List<AnimeModel>> GetTopAiringAnime()
+    {
+        var response = await _httpClient.GetAsync("https://api.jikan.moe/v4/top/anime?type=tv&filter=airing");
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new List<AnimeModel>(); // Return empty list if failed
+        }
+
+        var jsonString = await response.Content.ReadAsStringAsync();
+        var result = JsonSerializer.Deserialize<JikanApiResponse>(jsonString, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        });
+
+        return result?.Data ?? new List<AnimeModel>();
+    }
 
     public async Task<byte[]?> DownloadImageAsByteArray(string imageUrl)
     {
