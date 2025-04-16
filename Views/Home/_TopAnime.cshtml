@@ -1,0 +1,34 @@
+@model List<yorokoanime.ViewModels.AnimeModel>
+
+<h2 class="text-left mb-4 mt-4">Top Anime</h2>
+<hr/>
+
+<!-- Carousel Container -->
+<div class="container position-relative">
+    <!-- Left Scroll Button -->
+    <button class="carousel-btn left-btn" onclick="scrollAnime(-1)">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+
+    <!-- Anime List Wrapper -->
+    <div id="animeCarousel" class="anime-list d-flex overflow-hidden">
+        @foreach (var anime in Model)
+        {
+            <div class="anime-item card">
+                <img src="@anime.ImageUrl" class="card-img-top" alt="@anime.Title">
+                <div class="card-body text-center">
+                    <a class="card-title" asp-controller="Card" asp-action="AnimeCard" asp-route-malID="@anime.MalId">
+                        @anime.Title
+                    </a>
+                    <p class="card-text"><strong>Episodes:</strong> @anime.Episodes</p>
+                    <p class="card-text"><strong>Score:</strong> @anime.Score</p>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Right Scroll Button -->
+    <button class="carousel-btn right-btn" onclick="scrollAnime(1)">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</div>

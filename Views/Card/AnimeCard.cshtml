@@ -1,0 +1,127 @@
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@model yorokoanime.ViewModels.AnimeModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="main-card-body">
+    
+    <div class="card-left">
+        <div>
+            <img src="@Model.Images.Jpg.ImageUrl" class="" alt="@Model.Title">
+        </div>
+        
+        <div class="title">
+            <h3>Alternative Titles</h3>
+            <hr/>
+            <ul>
+                <li>Japanese: @Model.TitleJapanese</li>
+                <li>English: @Model.TitleEnglish</li>
+                <li>Synonyms: </li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Information</h3>
+            <hr/>
+            <ul>
+                <li>Type: @Model.Type</li>
+                <li>Episodes: @Model.Episodes</li>
+                <li>Status: @Model.Status</li>
+                <li>Aired: @Model.Aired.DateString</li>
+                <li>Premiered: </li>
+                <li>Broadcast: @Model.Broadcast.Day at @Model.Broadcast.Time (@Model.Broadcast.Timezone)</li>
+                <li>Producers: @(Model.Producers != null && Model.Producers.Any() 
+                                   ? string.Join(", ", Model.Producers.Select(p => p.Name)) 
+                                   : "N/A")</li>
+                <li>Licensors: @(Model.Licensors != null && Model.Licensors.Any()
+                                       ? string.Join(", ", Model.Licensors.Select(p => p.Name))
+                                       : "N/A")</li>
+                <li>Studios: @(Model.Studios != null && Model.Studios.Any()
+                                     ? string.Join(", ", Model.Studios.Select(p => p.Name))
+                                     : "N/A")</li>
+                <li>Source: @Model.Source</li>
+                <li>Genres: @(Model.Genres != null && Model.Genres.Any()
+                                    ? string.Join(", ", Model.Genres.Select(p => p.Name))
+                                    : "N/A")</li>
+                <li>Theme: @(Model.Themes != null && Model.Themes.Any()
+                                   ? string.Join(", ", Model.Themes.Select(p => p.Name))
+                                   : "N/A")</li>
+                <li>Demographic: @(Model.Demographics != null && Model.Demographics.Any()
+                                         ? string.Join(", ", Model.Demographics.Select(p => p.Name))
+                                         : "N/A")</li>
+                <li>Duration: @Model.Duration</li>
+                <li>Rating: @Model.Rating</li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="card-right">
+        <h2>@Model.Title</h2>
+        <hr/>
+        <p class="card-syn">
+            @Model.Synopsis
+        </p>
+        <p>Episodes: @Model.Episodes</p>
+        <p>Year: @Model.Year</p>
+        <p>Status: @Model.Status</p>
+        <p>Trailer: <a href="@Model.Trailer.Url">@Model.Trailer.Url</a></p>
+        <p>Producer: @Model.Producers.FirstOrDefault().Name</p>
+        <p>Studio: @Model.Studios.FirstOrDefault().Name</p>
+    </div>
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        <form asp-action="SubmitRating" method="post">
+            <div class="container mt-4">
+                <label for="ratingSlider" class="form-label">Rate us (1 to 5):</label>
+                <input type="range" class="form-range" min="1" max="5" step="1" id="ratingSlider" value="3" oninput="updateRating()">
+                <output id="ratingOutput" class="badge bg-primary ms-2">3</output>
+                <input type="hidden" name="Rating" id="ratingInput" value="3" />
+            </div>
+
+            <div class="container mt-4">
+                <label for="episodeDropdown" class="form-label">Select Episode:</label>
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="episodeDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
+                        Select Episode
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="episodeDropdownMenu">
+                        @for (int i = 0; i <= Model.Episodes; i++)
+                        {
+                            <li>
+                                <a class="dropdown-item" href="#" onclick="selectEpisode(@i); return false;">@i</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <p class="mt-2">Selected Episode: <span id="selectedEpisode">None</span></p>
+                <input type="hidden" name="Episode" id="episodeInput" />
+            </div>
+
+            <div class="container mt-4">
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+    }
+
+</div>
+
+<script>
+    function updateRating() {
+        const slider = document.getElementById('ratingSlider');
+        const output = document.getElementById('ratingOutput');
+        const hiddenInput = document.getElementById('ratingInput');
+        output.textContent = slider.value;
+        hiddenInput.value = slider.value;
+    }
+
+    function selectEpisode(episode) {
+        document.getElementById('selectedEpisode').innerText = episode;
+        document.getElementById('episodeInput').value = episode;
+        document.getElementById('episodeDropdownMenu').textContent = 'Episode ' + episode;
+    }
+</script>

@@ -1,0 +1,24 @@
+@model yorokoanime.ViewModels.MangaModel
+
+@{
+    ViewBag.Title = "title";
+    Layout = "_Layout";
+}
+
+<div class="main-card-body">
+    
+    <div class="card-left">
+        <img src="@Model.Images.Jpg.LargeImageUrl" class="" alt="@Model.Title">
+    </div>
+    
+    <div class="card-right">
+        <h2>@Model.Title</h2>
+        <hr/>
+        <p class="card-syn">
+            @Model.Synopsis
+        </p>
+        <p>Episodes: @Model.Volumes, Chapters: @Model.Chapters</p>
+        <p>Score: @Model.Score</p>
+    </div>
+    
+</div>
