@@ -1,7 +1,7 @@
 @model List<yorokoanime.ViewModels.AnimeModel>
 
-<h2 class="text-left mb-4">Top Anime</h2>
-<hr></hr>
+<h2 class="text-left mb-4 mt-4">Top Anime</h2>
+<hr/>
 
 <!-- Carousel Container -->
 <div class="container position-relative">
@@ -17,7 +17,9 @@
             <div class="anime-item card">
                 <img src="@anime.ImageUrl" class="card-img-top" alt="@anime.Title">
                 <div class="card-body text-center">
-                    <h5 class="card-title">@anime.Title</h5>
+                    <a class="card-title" asp-controller="Card" asp-action="AnimeCard" asp-route-malID="@anime.MalId">
+                        @anime.Title
+                    </a>
                     <p class="card-text"><strong>Episodes:</strong> @anime.Episodes</p>
                     <p class="card-text"><strong>Score:</strong> @anime.Score</p>
                 </div>

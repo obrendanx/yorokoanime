@@ -86,4 +86,42 @@ public class AnimeService
             return null; // Return null if the image download fails
         }
     }
+    
+    public async Task<AnimeModel> GetAnime(int malID)
+    {
+        var response = await _httpClient.GetAsync("https://api.jikan.moe/v4/anime/" + malID);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new AnimeModel(); // Return empty model if failed
+        }
+
+        var jsonString = await response.Content.ReadAsStringAsync();
+
+        var result = JsonSerializer.Deserialize<AnimeApiResponse>(jsonString, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return result?.Data ?? new AnimeModel(); 
+    }
+    
+    public async Task<MangaModel> GetManga(int malID)
+    {
+        var response = await _httpClient.GetAsync("https://api.jikan.moe/v4/manga/" + malID);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return new MangaModel(); // Return empty model if failed
+        }
+
+        var jsonString = await response.Content.ReadAsStringAsync();
+
+        var result = JsonSerializer.Deserialize<MangaApiResponse>(jsonString, new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        });
+
+        return result?.Data ?? new MangaModel(); 
+    }
 }

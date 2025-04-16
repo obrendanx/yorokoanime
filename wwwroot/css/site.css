@@ -85,3 +85,43 @@ body {
   font-size: 0.9em;
   color: #ccc;
 }
+
+.main-card-body{
+  display: flex;
+  height: 80%;
+  width: 100%;
+  margin-top:5%;
+}
+
+.card-left{
+  width: 40%;
+}
+
+.card-right{
+  width: 55%;
+  padding:2.5%;
+}
+
+.card-left img{
+  height: 100%;
+  width: 100%;
+}
+
+.card-syn{
+  font-size:0.9em;
+}
+
+@media (max-width: 1028px) {
+  .anime-item{
+    max-width: 28%;
+  }
+
+  .main-card-body{
+    max-height: 60%;
+    flex-direction: column;
+  }
+  
+  .card-left, .card-right{
+    width: 100%;
+  }
+}

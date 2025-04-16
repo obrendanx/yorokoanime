@@ -1,14 +1,15 @@
 namespace yorokoanime.Models;
 
-public class Manga
+public class UserFavorite
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Image { get; set; }
-    public decimal TotalNoChapters { get; set; }
-    public string Desc { get; set; }
+    public int malID { get; set; }
+    public string username { get; set; }
+    public string contentType { get; set; }
     public int userRating { get; set; }
     public bool isLiked { get; set; }
+    public decimal episodes {get; set;}
     public decimal chapters {get; set;}
     public decimal volumes {get; set;}
+    
 }

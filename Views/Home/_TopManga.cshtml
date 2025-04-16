@@ -17,7 +17,9 @@
             <div class="anime-item card">
                 <img src="@manga.ImageUrl" class="card-img-top" alt="@manga.Title">
                 <div class="card-body text-center">
-                    <h5 class="card-title">@manga.Title</h5>
+                    <a class="card-title" asp-controller="Card" asp-action="MangaCard" asp-route-malID="@manga.MalId">
+                        @manga.Title
+                    </a>
                     <p class="card-text"><strong>Volumes:</strong> @manga.Volumes</p>
                     <p class="card-text"><strong>Chapters:</strong> @manga.Chapters</p>
                     <p class="card-text"><strong>Score:</strong> @manga.Score</p>

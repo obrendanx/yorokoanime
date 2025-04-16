@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Manga> Manga { get; set; }
     public DbSet<Anime> Anime { get; set; }
+    public DbSet<UserFavorite> UserFavorites { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

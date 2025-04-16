@@ -7,4 +7,7 @@ public class Anime
     public string Image { get; set; }
     public int TotalNoEpisodes { get; set; }
     public string Desc { get; set; }
+    public int userRating { get; set; }
+    public bool isLiked { get; set; }
+    public decimal episodes {get; set;}
 }
