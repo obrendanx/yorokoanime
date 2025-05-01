@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace yorokoanime.ViewModels
 {
@@ -114,6 +115,17 @@ namespace yorokoanime.ViewModels
 
         [JsonPropertyName("demographics")]
         public List<Demographic> Demographics { get; set; }
+
+
+        public int userRating { get; set; } = 0;
+        public SelectList RatingOptions { get; set; }
+        public bool isLiked { get; set; } = false;
+        public double userEpisodes { get; set; } = 0;
+        public SelectList EpisodeOptions { get; set; }
+        public double userChapters { get; set; } = 0;
+        public SelectList ChapterOptions { get; set; }
+        public double userVolumes { get; set; } = 0;
+        public SelectList VolumeOptions { get; set; }
     }
 
     public class TitleInfo

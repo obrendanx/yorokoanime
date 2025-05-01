@@ -5,15 +5,98 @@
     ViewBag.Title = "title";
     Layout = "_Layout";
 }
+<h2>@Model.Title</h2>
+<hr/>
 
 <div class="main-card-body">
     
+    <div class="card-right">
+        <div class="card-score">
+            <div>
+                <h3>Score</h3>
+                <h4 class="text-center">@Model.Score</h4>
+            </div>
+            
+            <div class="card-rank">
+                <div class="card-rank-main">
+                    <ul>
+                        <li>Ranked: @Model.Rank</li>
+                        <li>Popularity: @Model.Popularity</li>
+                        <li>Members: @Model.Members</li>
+                    </ul>
+                </div>
+
+                <div class="card-sub-info">
+                    <ul>
+                        <li>@Model.Season @Model.Year</li>
+                        <li>@Model.Type</li>
+                        <li>@Model.Producers.FirstOrDefault().Name</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="SaveUserAnimePreferences" asp-controller="Card" method="post">
+                <div class="card-user">
+                    <ul>
+                        <li>
+                            <input type="hidden" asp-for="isLiked" id="isLiked" />
+                            <button type="submit" class="btn btn-primary" onclick="setLike()"
+                                    @(User.Identity.IsAuthenticated ? "" : "disabled")>
+                                @(Model.isLiked ? "Remove from Favorites" : "Add to Favorites")
+                            </button>
+                        </li>
+                    
+                            <label asp-for="userRating" class="ml-1">Rating</label>
+                            <li>
+                                <select asp-for="userRating" asp-items="Model.RatingOptions"
+                                        class="form-select btn-secondary"
+                                        onchange="this.form.submit();">
+                                </select>
+                            </li>
+                        
+                            <label asp-for="userEpisodes" class="ml-1">Episodes Watched</label>
+                            <li>
+                                <select asp-for="userEpisodes" asp-items="Model.EpisodeOptions"
+                                        class="form-select btn-secondary"
+                                        onchange="this.form.submit();">
+                                </select>
+                            </li>
+                    </ul>
+
+                    <input type="hidden" asp-for="MalId" />
+                </div>
+            </form>
+        }
+
+
+        <p class="card-syn">
+            <h2 class="h2">Synopsis</h2>
+            <hr/>
+            
+            @Model.Synopsis
+        </p>
+
+        @if (Model.Background != null)
+        {
+            <p class="card-syn mt-3">
+                <h2 class="h2">Background</h2>
+                <hr/>
+
+                @Model.Background
+            </p>
+        }
+    </div>
+
     <div class="card-left">
         <div>
             <img src="@Model.Images.Jpg.ImageUrl" class="" alt="@Model.Title">
         </div>
-        
-        <div class="title">
+
+        <div class="title mt-2">
             <h3>Alternative Titles</h3>
             <hr/>
             <ul>
@@ -33,9 +116,9 @@
                 <li>Aired: @Model.Aired.DateString</li>
                 <li>Premiered: </li>
                 <li>Broadcast: @Model.Broadcast.Day at @Model.Broadcast.Time (@Model.Broadcast.Timezone)</li>
-                <li>Producers: @(Model.Producers != null && Model.Producers.Any() 
-                                   ? string.Join(", ", Model.Producers.Select(p => p.Name)) 
-                                   : "N/A")</li>
+                <li>Producers: @(Model.Producers != null && Model.Producers.Any()
+                                       ? string.Join(", ", Model.Producers.Select(p => p.Name))
+                                       : "N/A")</li>
                 <li>Licensors: @(Model.Licensors != null && Model.Licensors.Any()
                                        ? string.Join(", ", Model.Licensors.Select(p => p.Name))
                                        : "N/A")</li>
@@ -57,56 +140,6 @@
             </ul>
         </div>
     </div>
-    
-    <div class="card-right">
-        <h2>@Model.Title</h2>
-        <hr/>
-        <p class="card-syn">
-            @Model.Synopsis
-        </p>
-        <p>Episodes: @Model.Episodes</p>
-        <p>Year: @Model.Year</p>
-        <p>Status: @Model.Status</p>
-        <p>Trailer: <a href="@Model.Trailer.Url">@Model.Trailer.Url</a></p>
-        <p>Producer: @Model.Producers.FirstOrDefault().Name</p>
-        <p>Studio: @Model.Studios.FirstOrDefault().Name</p>
-    </div>
-
-    @if (User.Identity.IsAuthenticated)
-    {
-        <form asp-action="SubmitRating" method="post">
-            <div class="container mt-4">
-                <label for="ratingSlider" class="form-label">Rate us (1 to 5):</label>
-                <input type="range" class="form-range" min="1" max="5" step="1" id="ratingSlider" value="3" oninput="updateRating()">
-                <output id="ratingOutput" class="badge bg-primary ms-2">3</output>
-                <input type="hidden" name="Rating" id="ratingInput" value="3" />
-            </div>
-
-            <div class="container mt-4">
-                <label for="episodeDropdown" class="form-label">Select Episode:</label>
-                <div class="dropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="episodeDropdownMenu" data-bs-toggle="dropdown" aria-expanded="false">
-                        Select Episode
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="episodeDropdownMenu">
-                        @for (int i = 0; i <= Model.Episodes; i++)
-                        {
-                            <li>
-                                <a class="dropdown-item" href="#" onclick="selectEpisode(@i); return false;">@i</a>
-                            </li>
-                        }
-                    </ul>
-                </div>
-
-                <p class="mt-2">Selected Episode: <span id="selectedEpisode">None</span></p>
-                <input type="hidden" name="Episode" id="episodeInput" />
-            </div>
-
-            <div class="container mt-4">
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
-    }
 
 </div>
 
@@ -123,5 +156,20 @@
         document.getElementById('selectedEpisode').innerText = episode;
         document.getElementById('episodeInput').value = episode;
         document.getElementById('episodeDropdownMenu').textContent = 'Episode ' + episode;
+    }
+    
+    function setLike(){
+        var btn = document.getElementById('isLiked');
+
+        console.log(btn.value);
+        
+        if (btn.value == 'True'){
+            btn.value = "False";
+        }
+        else{
+            btn.value = "True";
+        }
+        
+        console.log("clicked");
     }
 </script>

@@ -7,9 +7,9 @@ public class UserFavorite
     public string username { get; set; }
     public string contentType { get; set; }
     public int userRating { get; set; }
-    public bool isLiked { get; set; }
-    public decimal episodes {get; set;}
-    public decimal chapters {get; set;}
-    public decimal volumes {get; set;}
+    public bool hasLiked { get; set; }
+    public double episodes {get; set;}
+    public double chapters {get; set;}
+    public double volumes {get; set;}
     
 }
