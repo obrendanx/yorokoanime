@@ -85,7 +85,7 @@ public class DatabaseMethods
             new SqlParameter("@members", model.Members ?? (object)DBNull.Value),
             new SqlParameter("@favorites", model.Favorites ?? (object)DBNull.Value),
             new SqlParameter("@airedFrom", DBNull.Value),
-            new SqlParameter("@airedTo", DBNull.Value),
+            new SqlParameter("@airedTo",  DBNull.Value),
             new SqlParameter("@airedString", model.Aired?.DateString ?? (object)DBNull.Value),
             new SqlParameter("@year", model.Year ?? (object)DBNull.Value),
             new SqlParameter("@trailerUrl", model.Trailer?.Url ?? (object)DBNull.Value),
@@ -212,7 +212,7 @@ public class DatabaseMethods
                 new SqlParameter("@username", model.username ?? (object)DBNull.Value),
                 new SqlParameter("@contentType", model.contentType ?? (object)DBNull.Value),
                 new SqlParameter("@userRating", model.userRating),
-                new SqlParameter("@hasLiked", model.isLiked),
+                new SqlParameter("@hasLiked", model.hasLiked),
                 new SqlParameter("@episodes", model.episodes),
                 new SqlParameter("@chapters", model.chapters),
                 new SqlParameter("@volumes", model.volumes)
@@ -227,7 +227,32 @@ public class DatabaseMethods
         }
     }
     
-    public UserFavorite GetUserFavorite(int malId, string username, string contentType)
+    public bool SaveUserAnimePreference(AnimeModel model, string username)
+    {
+        try
+        {
+            _dbContext.Database.ExecuteSqlRaw(
+                "EXEC UpdateUserPreferences @Username, @MalId, @IsLiked, @UserRating, @Episodes, @ContentType, @Chapters, @Volumes",
+                new SqlParameter("@Username",  username ?? (object)DBNull.Value),
+                new SqlParameter("@MalId", model.MalId),
+                new SqlParameter("@IsLiked", model.isLiked),
+                new SqlParameter("@UserRating", model.userRating),
+                new SqlParameter("@Episodes", model.userEpisodes),
+                new SqlParameter("@ContentType",  "Anime"),
+                new SqlParameter("@Chapters", model.userChapters),
+                new SqlParameter("@Volumes", model.userVolumes)
+            );
+
+            return true; // Return true if successful
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding save preference: {ex.Message}");
+            return false; // Return false if an error occurs
+        }
+    }
+    
+    public UserFavorite GetUserFavorite(int? malId, string username, string contentType)
     {
         try
         {
@@ -239,7 +264,15 @@ public class DatabaseMethods
                     new SqlParameter("@contentType", contentType ?? (object)DBNull.Value)
                 )
                 .AsEnumerable() // forces evaluation before FirstOrDefault
-                .FirstOrDefault();
+                .Select(f => new UserFavorite
+                {
+                    malID = f.malID,
+                    username = f.username,
+                    contentType = f.contentType,
+                    userRating = f.userRating,
+                    episodes = f.episodes,
+                    hasLiked = f.hasLiked
+                }).FirstOrDefault();
 
             return favorites;
         }

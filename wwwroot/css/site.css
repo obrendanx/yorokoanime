@@ -88,17 +88,18 @@ body {
 
 .main-card-body{
   display: flex;
+  flex-direction: row-reverse;
   height: 80%;
   width: 100%;
   margin-top:5%;
 }
 
 .card-left{
-  width: 40%;
+  width: 30%;
 }
 
 .card-right{
-  width: 55%;
+  width: 65%;
   padding:2.5%;
 }
 
@@ -124,4 +125,51 @@ body {
   .card-left, .card-right{
     width: 100%;
   }
+}
+
+.card-score{
+  display: flex;
+  flex-direction: row;
+  background-color: #fff;
+  border: #272727 3px solid;
+  border-radius: 1px;
+  height: 100px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.card-rank{
+  border-left:solid 2px #181818;
+  margin-left:2.5%;
+  margin-bottom:2.5%;
+}
+
+.card-rank li{
+  display:inline-block;
+}
+
+.card-user{
+  display: flex;
+  flex-direction: row;
+  background-color: #fff;
+  border-radius: 1px;
+  height: 68px;
+  padding: 8px 10px;
+}
+
+.card-user li{
+  display:inline-block;
+}
+
+.card-rank-main li{
+  font-size:1.2em;
+  margin-right:10px;
+}
+
+.card-sub-info li{
+  border-right:#414141 1px solid;
+  font-family: Avenir,lucida grande,tahoma,verdana,arial,sans-serif;
+  font-size: 10px;
+  margin-right: 12px;
+  padding-right: 12px;
 }
