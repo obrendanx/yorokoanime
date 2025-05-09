@@ -112,6 +112,11 @@ body {
   font-size:0.9em;
 }
 
+.pref-form{
+  min-height:100px;
+  margin-bottom: 15px;
+}
+
 @media (max-width: 1028px) {
   .anime-item{
     max-width: 28%;
@@ -124,6 +129,14 @@ body {
   
   .card-left, .card-right{
     width: 100%;
+  }
+  
+  .card-user{
+    font-size:0.9em;
+    margin-bottom:15px; 
+  }
+  .card-user li{
+    margin:5px;
   }
 }
 
