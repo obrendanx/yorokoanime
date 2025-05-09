@@ -39,7 +39,7 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            <form asp-action="SaveUserAnimePreferences" asp-controller="Card" method="post">
+            <form asp-action="SaveUserAnimePreferences" asp-controller="Card" method="post" class="pref-form">
                 <div class="card-user">
                     <ul>
                         <li>

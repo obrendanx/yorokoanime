@@ -252,6 +252,31 @@ public class DatabaseMethods
         }
     }
     
+    public bool SaveUserMangaPreference(MangaModel model, string username)
+    {
+        try
+        {
+            _dbContext.Database.ExecuteSqlRaw(
+                "EXEC UpdateUserPreferences @Username, @MalId, @IsLiked, @UserRating, @Episodes, @ContentType, @Chapters, @Volumes",
+                new SqlParameter("@Username",  username ?? (object)DBNull.Value),
+                new SqlParameter("@MalId", model.MalId),
+                new SqlParameter("@IsLiked", model.isLiked),
+                new SqlParameter("@UserRating", model.userRating),
+                new SqlParameter("@Episodes", model.userEpisodes),
+                new SqlParameter("@ContentType",  "Manga"),
+                new SqlParameter("@Chapters", model.userChapters),
+                new SqlParameter("@Volumes", model.userVolumes)
+            );
+
+            return true; // Return true if successful
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error adding save preference: {ex.Message}");
+            return false; // Return false if an error occurs
+        }
+    }
+    
     public UserFavorite GetUserFavorite(int? malId, string username, string contentType)
     {
         try
@@ -271,7 +296,9 @@ public class DatabaseMethods
                     contentType = f.contentType,
                     userRating = f.userRating,
                     episodes = f.episodes,
-                    hasLiked = f.hasLiked
+                    hasLiked = f.hasLiked,
+                    volumes = f.volumes,
+                    chapters = f.chapters
                 }).FirstOrDefault();
 
             return favorites;

@@ -6,19 +6,184 @@
 }
 
 <div class="main-card-body">
-    
-    <div class="card-left">
-        <img src="@Model.Images.Jpg.LargeImageUrl" class="" alt="@Model.Title">
-    </div>
-    
+
     <div class="card-right">
-        <h2>@Model.Title</h2>
-        <hr/>
+        <div class="card-score">
+            <div>
+                <h3>Score</h3>
+                <h4 class="text-center">@Model.Score</h4>
+            </div>
+
+            <div class="card-rank">
+                <div class="card-rank-main">
+                    <ul>
+                        <li>Ranked: @Model.Rank</li>
+                        <li>Popularity: @Model.Popularity</li>
+                        <li>Members: @Model.Members</li>
+                    </ul>
+                </div>
+
+                <div class="card-sub-info">
+                    <ul>
+                        <li>@Model.Type</li>
+                        <li>@Model.Serializations.FirstOrDefault().Name</li>
+                        <li>@Model.Authors.FirstOrDefault().Name</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form asp-action="SaveUserMangaPreferences" asp-controller="Card" method="post" class="pref-form">
+                <div class="card-user">
+                    <ul>
+                        <li>
+                            <input type="hidden" asp-for="isLiked" id="isLiked" />
+                            <button type="submit" class="btn btn-primary" onclick="setLike()"
+                                    @(User.Identity.IsAuthenticated ? "" : "disabled")>
+                                @(Model.isLiked ? "Remove from Favorites" : "Add to Favorites")
+                            </button>
+                        </li>
+
+                        <label asp-for="userRating" class="ml-1">Rating</label>
+                        <li>
+                            <select asp-for="userRating" asp-items="Model.RatingOptions"
+                                    class="form-select btn-secondary"
+                                    onchange="this.form.submit();">
+                            </select>
+                        </li>
+
+                        <label asp-for="userVolumes" class="ml-1">Volume</label>
+                        <li>
+                            <select asp-for="userVolumes" asp-items="Model.VolumeOptions"
+                                    class="form-select btn-secondary"
+                                    onchange="this.form.submit();">
+                            </select>
+                        </li>
+
+                        <label asp-for="userChapters" class="ml-1">Chapters Read</label>
+                        <li>
+                            <select asp-for="userChapters" asp-items="Model.ChapterOptions"
+                                    class="form-select btn-secondary"
+                                    onchange="this.form.submit();">
+                            </select>
+                        </li>
+                    </ul>
+
+                    <input type="hidden" asp-for="MalId" />
+                </div>
+            </form>
+        }
+
+
         <p class="card-syn">
-            @Model.Synopsis
+        <h2 class="h2">Synopsis</h2>
+        <hr/>
+
+        @Model.Synopsis
         </p>
-        <p>Episodes: @Model.Volumes, Chapters: @Model.Chapters</p>
-        <p>Score: @Model.Score</p>
+
+        @if (Model.Background != null)
+        {
+            <p class="card-syn mt-3">
+            <h2 class="h2">Background</h2>
+            <hr/>
+
+            @Model.Background
+            </p>
+        }
     </div>
-    
+
+    <div class="card-left">
+        <div>
+            <img src="@Model.Images.Jpg.ImageUrl" class="" alt="@Model.Title">
+        </div>
+
+        <div class="title mt-2">
+            <h3>Alternative Titles</h3>
+            <hr/>
+            <ul>
+                <li>Japanese: @Model.TitleJapanese</li>
+                <li>English: @Model.TitleEnglish</li>
+            </ul>
+        </div>
+
+        <div class="info">
+            <h3>Information</h3>
+            <hr/>
+            <ul>
+                <li>Type: @Model.Type</li>
+                <li>Volumes: @Model.Volumes</li>
+                <li>Chapters: @Model.Chapters</li>
+                <li>Status: @Model.Status</li>
+                <li>Published: @Model.Published.From, @Model.Published.To</li>
+                <li>Genres: @(Model.Genres != null && Model.Genres.Any()
+                                ? string.Join(", ", Model.Genres.Select(p => p.Name))
+                                : "N/A")</li>
+                <li>Demographics: @(Model.Demographics != null && Model.Demographics.Any()
+                                      ? string.Join(", ", Model.Demographics.Select(p => p.Name))
+                                      : "N/A")</li>
+                <li>Serialization: @(Model.Serializations != null && Model.Serializations.Any()
+                                       ? string.Join(", ", Model.Serializations.Select(p => p.Name))
+                                       : "N/A")</li>
+                <li>Authors: @(Model.Authors != null && Model.Authors.Any()
+                                 ? string.Join(", ", Model.Authors.Select(p => p.Name))
+                                 : "N/A")</li>
+            </ul>
+        </div>
+
+        <div class="title mt-2">
+            <h3>Statistics</h3>
+            <hr/>
+            <ul>
+                <li>Score: @Model.Score</li>
+                <li>Ranked: @Model.Rank</li>
+                <li>Popularity: @Model.Popularity</li>
+                <li>Members: @Model.Members</li>
+                <li>Favorites: @Model.Favorites</li>
+            </ul>
+        </div>
+
+        <div class="title mt-2">
+            <h3>Available At</h3>
+            <hr/>
+            <ul>
+                <li><a href="@Model.Url">Official Site</a></li>
+            </ul>
+        </div>
+
+    </div>
 </div>
+
+<script>
+    function updateRating() {
+        const slider = document.getElementById('ratingSlider');
+        const output = document.getElementById('ratingOutput');
+        const hiddenInput = document.getElementById('ratingInput');
+        output.textContent = slider.value;
+        hiddenInput.value = slider.value;
+    }
+
+    function selectEpisode(episode) {
+        document.getElementById('selectedEpisode').innerText = episode;
+        document.getElementById('episodeInput').value = episode;
+        document.getElementById('episodeDropdownMenu').textContent = 'Episode ' + episode;
+    }
+
+    function setLike(){
+        var btn = document.getElementById('isLiked');
+
+        console.log(btn.value);
+
+        if (btn.value == 'True'){
+            btn.value = "False";
+        }
+        else{
+            btn.value = "True";
+        }
+
+        console.log("clicked");
+    }
+</script>

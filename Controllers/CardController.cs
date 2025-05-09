@@ -67,6 +67,44 @@ public class CardController : Controller
     {
         var manga = await _animeService.GetManga(malID);
         
+        manga.RatingOptions = new SelectList(
+            Enumerable.Range(1, 5).Select(i => new { Value = i, Text = i.ToString() }),
+            "Value",
+            "Text",
+            manga.userRating
+        );
+        
+        manga.VolumeOptions = new SelectList(
+            Enumerable.Range(0, (int)manga.Volumes + 1) // +1 to include the last episode
+                .Select(i => new { Value = i, Text = i.ToString() }),
+            "Value",
+            "Text",
+            manga.userVolumes // pre-selected episode (optional)
+        );
+        
+        manga.ChapterOptions = new SelectList(
+            Enumerable.Range(0, (int)manga.Chapters + 1) // +1 to include the last episode
+                .Select(i => new { Value = i, Text = i.ToString() }),
+            "Value",
+            "Text",
+            manga.userChapters // pre-selected episode (optional)
+        );
+        
+        string username = User.Identity.Name;
+
+        if (User.Identity.IsAuthenticated)
+        {
+            UserFavorite favorite = _databaseMethods.GetUserFavorite(manga?.MalId, username, "Manga");
+
+            if (favorite != null)
+            {
+                manga.userVolumes = favorite.volumes;
+                manga.userChapters = favorite.chapters;
+                manga.userRating = favorite.userRating;
+                manga.isLiked = favorite.hasLiked;
+            }
+        }
+        
         return View(manga);
     }
 
@@ -77,5 +115,14 @@ public class CardController : Controller
         _databaseMethods.SaveUserAnimePreference(model, username);
 
         return RedirectToAction("AnimeCard", new { malID = model.MalId });
+    }
+    
+    [HttpPost]
+    public async Task<IActionResult> SaveUserMangaPreferences(MangaModel model)
+    {
+        var username = User.Identity.Name;
+        _databaseMethods.SaveUserMangaPreference(model, username);
+
+        return RedirectToAction("MangaCard", new { malID = model.MalId });
     }
 }
