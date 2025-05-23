@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace yorokoanime.Models;
 
 public class Anime
 {
+    [Key]
     public int Id { get; set; }
     public string Name { get; set; }
     public string Image { get; set; }

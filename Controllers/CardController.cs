@@ -105,6 +105,9 @@ public class CardController : Controller
             }
         }
         
+        byte[]? imageBytes = await _animeService.DownloadImageAsByteArray(manga.ImageUrl);
+        _databaseMethods.AddManga(manga, imageBytes);
+        
         return View(manga);
     }
 
