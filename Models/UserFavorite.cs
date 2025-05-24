@@ -1,7 +1,10 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace yorokoanime.Models;
 
 public class UserFavorite
 {
+    [Key]
     public int Id { get; set; }
     public int malID { get; set; }
     public string username { get; set; }

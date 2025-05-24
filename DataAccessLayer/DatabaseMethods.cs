@@ -62,6 +62,7 @@ public class DatabaseMethods
         return null;
     }
     
+    
     public bool AddAnime(AnimeModel model, byte[] imageBytes, byte[] maxImageBytes)
 {
     try
@@ -308,6 +309,106 @@ public class DatabaseMethods
             Console.WriteLine($"Error retrieving favorite: {ex.Message}");
             return null; // return null if an error occurs
         }
+    }
+    
+    public List<UserFavorite> GetFavoriteAnime(string username)
+    {
+        try
+        {
+            var favorite = _dbContext.UserFavorites
+                .FromSqlRaw("EXEC GetFavoriteAnime @Username", new SqlParameter("@Username", username))
+                .AsEnumerable()
+                .Select(u => new UserFavorite
+                {
+                    Id = u.Id,
+                    malID = u.malID,
+                    username = u.username,
+                    contentType = u.contentType,
+                    userRating = u.userRating,
+                    hasLiked = u.hasLiked,
+                    episodes = u.episodes,
+                    chapters = u.chapters,
+                    volumes = u.volumes
+                })
+                .ToList();
+            
+            return favorite;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting user: {ex.Message}");
+        }
+        
+        return null;
+    }
+    
+    public async Task<List<UserFavorite>> GetFavoriteManga(string username)
+    {
+        try
+        {
+            var favorite = _dbContext.UserFavorites
+                .FromSqlRaw("EXEC GetFavoriteManga @Username", new SqlParameter("@Username", username))
+                .AsEnumerable()
+                .Select(u => new UserFavorite
+                {
+                    Id = u.Id,
+                    malID = u.malID,
+                    username = u.username,
+                    contentType = u.contentType,
+                    userRating = u.userRating,
+                    hasLiked = u.hasLiked,
+                    episodes = u.episodes,
+                    chapters = u.chapters,
+                    volumes = u.volumes
+                })
+                .ToList();
+            
+            return favorite;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting user: {ex.Message}");
+        }
+        
+        return null;
+    }
+    
+    public Manga? GetManga(int malID)
+    {
+        try
+        {
+            var manga = _dbContext.Manga
+                .FromSqlRaw("EXEC GetManga @MalID", new SqlParameter("@MalID", malID))
+                .AsEnumerable()
+                .FirstOrDefault();
+            
+            return manga;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting manga: {ex.Message}");
+        }
+        
+        return null;
+    }
+    
+    public Anime? GetAnime(int malID)
+    {
+        try
+        {
+            var anime = _dbContext.Anime
+                .FromSqlRaw("EXEC GetAnime @MalID", new SqlParameter("@MalID", malID))
+                .AsEnumerable()
+                .FirstOrDefault();
+            
+            return anime;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting anime: {ex.Message}");
+        }
+        
+        return null;
     }
 }
 

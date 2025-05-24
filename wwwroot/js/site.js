@@ -12,3 +12,8 @@ function scrollManga(direction) {
     const carousel = document.getElementById("mangaCarousel");
     carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
 }
+
+function scrollUserManga(direction) {
+    const carousel = document.getElementById("mangaCarousel");
+    carousel.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
