@@ -27,6 +27,7 @@ public class HomeController : Controller
         List<MangaModel> topManga = await _animeService.GetTopManga();
         List<AnimeModel> airingAnime = await _animeService.GetTopAiringAnime();
         List<MangaModel> favoriteMangaModels = new();
+        List<AnimeModel> favoriteAnimeModels = new();
 
         if (User.Identity.IsAuthenticated)
         {
@@ -111,6 +112,117 @@ public class HomeController : Controller
                     }
                 }
             }
+            
+            List<UserFavorite> animeFav = _databaseMethods.GetFavoriteAnime(username);
+            
+            if (animeFav != null)
+            {
+                foreach (var animeFavorite in animeFav)
+                {
+                    var animeEntity = _databaseMethods.GetAnime(animeFavorite.malID);
+
+                    if (animeEntity != null)
+                    {
+                        var animeViewModel = new AnimeModel
+                        {
+                            MalId = animeEntity.MalId,
+                            Url = $"https://myanimelist.net/anime/{animeEntity.MalId}",
+                            Approved = true,
+                            Title = animeEntity.Title,
+                            TitleEnglish = animeEntity.TitleEnglish,
+                            TitleJapanese = animeEntity.TitleJapanese,
+                            Titles = new List<TitleInfo>
+                            {
+                                new TitleInfo { Type = "Default", Title = animeEntity.Title }
+                            },
+                            Type = animeEntity.Type,
+                            Source = animeEntity.Source,
+                            Episodes = animeEntity.Episodes,
+                            Status = animeEntity.Status,
+                            Airing = animeEntity.Airing,
+                            Duration = animeEntity.Duration,
+                            Rating = animeEntity.Rating,
+                            Score = (double?)animeEntity.Score,
+                            ScoredBy = animeEntity.ScoredBy,
+                            Rank = animeEntity.Rank,
+                            Popularity = animeEntity.Popularity,
+                            Members = animeEntity.Members,
+                            Favorites = animeEntity.Favorites,
+                            Synopsis = animeEntity.Synopsis,
+                            Background = animeEntity.Background,
+                            Season = animeEntity.Season,
+                            Year = animeEntity.Year,
+                            Aired = new AiredData
+                            {
+                                From = animeEntity.AiredFrom,
+                                To = animeEntity.AiredTo,
+                                DateString = animeEntity.AiredString
+                            },
+                            Broadcast = new BroadcastData
+                            {
+                                String = animeEntity.BroadcastString
+                            },
+                            Trailer = new TrailerData
+                            {
+                                Url = animeEntity.TrailerUrl,
+                                EmbedUrl = animeEntity.TrailerEmbedUrl
+                            },
+                            Images = new ImageData
+                            {
+                                Jpg = new JpgData
+                                {
+                                    ImageUrl = animeEntity.ImageUrl
+                                },
+                                Webp = new JpgData
+                                {
+                                    ImageUrl = animeEntity.ImageUrl
+                                }
+                            },
+                            Producers = animeEntity.Producer?.Split(',').Select(p => new Producer
+                            {
+                                Name = p.Trim()
+                            }).ToList() ?? new List<Producer>(),
+
+                            Studios = animeEntity.Studio?.Split(',').Select(s => new Studio
+                            {
+                                Name = s.Trim()
+                            }).ToList() ?? new List<Studio>(),
+
+                            Licensors = animeEntity.Licensors?.Split(',').Select(l => new Licensor
+                            {
+                                Name = l.Trim()
+                            }).ToList() ?? new List<Licensor>(),
+
+                            Genres = animeEntity.Genres?.Split(',').Select(g => new Genre
+                            {
+                                Name = g.Trim()
+                            }).ToList() ?? new List<Genre>(),
+
+                            ExplicitGenres = animeEntity.ExplicitGenres?.Split(',').Select(e => new Genre
+                            {
+                                Name = e.Trim()
+                            }).ToList() ?? new List<Genre>(),
+
+                            Themes = animeEntity.Themes?.Split(',').Select(t => new Genre
+                            {
+                                Name = t.Trim()
+                            }).ToList() ?? new List<Genre>(),
+
+                            Demographics = animeEntity.Demographics?.Split(',').Select(d => new Demographic
+                            {
+                                Name = d.Trim()
+                            }).ToList() ?? new List<Demographic>(),
+
+                            userRating = animeFavorite.userRating,
+                            userEpisodes = animeFavorite.episodes
+                        };
+
+                        // Optional: populate SelectLists here if needed
+
+                        favoriteAnimeModels.Add(animeViewModel);
+                    }
+                }
+            }
         }
         
         var model = new HomeModel();
@@ -118,6 +230,7 @@ public class HomeController : Controller
         model.TopManga = topManga;
         model.TopAiringAnime = airingAnime;
         model.UserManga = favoriteMangaModels;
+        model.UserAnime = favoriteAnimeModels;
         
         return View(model);
     }

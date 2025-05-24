@@ -1,0 +1,29 @@
+@model List<yorokoanime.ViewModels.AnimeModel>
+
+<h2 class="text-left mb-4 mt-4">Your Top Anime</h2>
+<hr></hr>
+
+<!-- Carousel Container -->
+<div class="container position-relative">
+
+    <!-- Anime List Wrapper -->
+    <div id="mangaCarousel" class="anime-list d-flex overflow-hidden user-card">
+        @if (Model != null)
+        {
+            foreach (var anime in Model.Take(5))
+            {
+                <div class="anime-item card">
+                    <img src="@anime.ImageUrl" class="card-img-top" alt="@anime.Title">
+                    <div class="card-body text-center">
+                        <a class="card-title" asp-controller="Card" asp-action="MangaCard" asp-route-malID="@anime.MalId">
+                            @anime.Title
+                        </a>
+                        <p class="card-text"><strong>Episodes Watched:</strong> @anime.userEpisodes/@anime.Episodes</p>
+                        <p class="card-text"><strong>Rating:</strong> @anime.userRating</p>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+    
+</div>

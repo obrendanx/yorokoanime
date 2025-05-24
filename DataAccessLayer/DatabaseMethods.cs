@@ -391,5 +391,24 @@ public class DatabaseMethods
         
         return null;
     }
+    
+    public Anime? GetAnime(int malID)
+    {
+        try
+        {
+            var anime = _dbContext.Anime
+                .FromSqlRaw("EXEC GetAnime @MalID", new SqlParameter("@MalID", malID))
+                .AsEnumerable()
+                .FirstOrDefault();
+            
+            return anime;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting anime: {ex.Message}");
+        }
+        
+        return null;
+    }
 }
 

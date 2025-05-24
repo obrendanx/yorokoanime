@@ -59,6 +59,10 @@ public class CardController : Controller
                 anime.isLiked = favorite.hasLiked;
             }
         }
+        
+        byte[]? imageBytes = await _animeService.DownloadImageAsByteArray(anime.ImageUrl);
+        byte[]? maxImageBytes = await _animeService.DownloadImageAsByteArray(anime.Images.Jpg.LargeImageUrl);
+        _databaseMethods.AddAnime(anime, imageBytes, maxImageBytes);
 
         return View(anime);
     }
